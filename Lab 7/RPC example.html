@@ -1,0 +1,98 @@
+
+<!-- saved from url=(0051)https://www.unf.edu/~sahuja/cnt5505/rpcexample.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body>
+<title>RPC example</title>
+<bg color="#FFFFFF">
+
+/* date.x - Specification of remote date and time service <br>
+bindate() which returns the binary time and date (no args).<br>
+This file is the input to rpcgen */<br>
+
+program DATEPROG {		/* remote program name (not used)*/<br>
+	version DATEVERS {     /* declaration of program version<br>
+					number*/<br>
+	long BINDATE(void) = 1;  /* procedure number = 1 */<br>
+	} = 1;			  /* definition of program version = <br>
+							1*/<br>
+} = 0x3012225;			  /* remote program number (must be<br>
+						unique)*/<br>
+
+/****************************************************************/<br>
+
+/* rdate.c - client program for remote date service */<br>
+#include stdio.h<br>
+#include rpc/rpc.h<br>
+#include stdlib.h<br>
+#include "date.h"<br>
+
+int main(int argc, char *argv[]) {<br>
+  CLIENT *cl;<br>
+  char *server;<br>
+  long  *lres;<br>
+  
+  if (argc != 2) {<br>
+ 	fprintf(stderr, "usage: %s hostname\n", argv[0]);<br>
+    	exit(1);<br>
+  }<br>
+  server = argv[1];<br>
+  /* create client handle */
+<br>
+ if ((cl = clnt_create(server, DATEPROG, DATEVERS, "udp")) == NULL) {<br>
+  /* couldn't establish connection with server */<br>
+  printf("can't establish connection with host %s\n", server);<br>
+  exit(2);<br>
+ }<br>
+
+/* first call the remote procedure bindate() */<br>
+ if (( lres = bindate_1(NULL, cl)) == NULL){<br>
+       printf(" remote procedure bindate() failure\n");<br>
+       exit(3);<br>
+ }<br>
+
+ printf("time on host %s = %ld\n", server, *lres);<br>
+
+
+clnt_destroy(cl); /* done with handle */<br>
+return 0;<br>
+}<br>
+
+
+
+/*********************************************************************/<br>
+
+<bg color="0xFFFFFF">
+/* dateproc.c - remote procedures; called by server stub */<br>
+
+#include stdio.h<br>
+#include stdlib.h<br>
+#include rpc/rpc.h<br>
+#include "date.h"<br>
+
+/* return the binary date and time */<br>
+
+
+/* In Linux: 
+   long * bindate_1_svc(void* arg1, struct svc_req *arg2) {<br>
+*/ <br>
+<br>
+/* In Dec Unix:
+long * bindate_1() {<br>
+*/<br>
+<br>
+long * bindate_1() {<br>
+   static long timeval;  /* must be static */<br>
+   timeval = time((long *) 0);<br>
+   return (&amp;timeval);<br>
+ }<br>
+
+
+****************************************************<br>
+Commands:<br>
+rpcgen date.x<br>
+gcc -c date_clnt.c<br>
+gcc -c date_svc.c<br>
+gcc -c dateproc.c<br>
+gcc -c rdate.c<br>
+gcc -o client date_clnt.o rdate.o<br>
+gcc -o server  date_svc.o   dateproc.o<br>
+</bg></bg></body></html>
