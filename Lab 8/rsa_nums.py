@@ -1,5 +1,4 @@
 import random
-
 def gcd(a, b):
 	while True:
 		temp = a%b
@@ -7,12 +6,10 @@ def gcd(a, b):
 			return b
 		a = b
 		b = temp
-
 print("Enter two different prime numbers: ")
 p, q = raw_input().split()
 p = int(p)
 q = int(q)
-
 n = p*q
 phi = (p-1)*(q-1)
 e = random.choice(range(2, phi))
