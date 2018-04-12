@@ -13,3 +13,7 @@ Computer Networks programs from Sem 3-2
 8. Cryptography - RSA Encryption
 9. Simulation of Sliding Window Protocol
 10. FTP and Ping
+
+### misc:
+
+1. Bellman-Ford distance vector routing algorithm (special case only)
